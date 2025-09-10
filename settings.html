@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Octopus - Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              octopus: {
+                primary: "#6366f1",
+                secondary: "#818cf8",
+                accent: "#a5b4fc",
+                dark: "#0f172a",
+                card: "#1e293b",
+                "card-light": "#334155",
+              },
+            },
+            animation: {
+              float: "float 6s ease-in-out infinite",
+              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-10px)" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+      }
+
+      .octopus-bg {
+        background: linear-gradient(135deg, #6366f1 0%, #0f172a 100%);
+      }
+
+      .tentacle {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        opacity: 0.07;
+        background: radial-gradient(circle, #818cf8 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 15s infinite alternate ease-in-out;
+      }
+
+      .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      }
+
+      .glow {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+      }
+
+      /* Shadcn-like components */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.75rem;
+        font-weight: 500;
+        transition: all 0.2s;
+        outline: none;
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        background: linear-gradient(90deg, #6366f1, #818cf8);
+        color: white;
+        border: none;
+      }
+
+      .btn-primary:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background-color: #334155;
+        color: white;
+        border: 1px solid #475569;
+      }
+
+      .btn-secondary:hover {
+        background-color: #475569;
+        transform: translateY(-2px);
+      }
+
+      .btn-ghost {
+        background-color: transparent;
+        color: #94a3b8;
+        border: none;
+      }
+
+      .btn-ghost:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: #e2e8f0;
+        transform: translateY(-2px);
+      }
+
+      .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+      }
+
+      .btn-md {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.875rem;
+      }
+
+      .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 9999px;
+        padding: 0.35rem 0.85rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .badge-primary {
+        background-color: rgba(99, 102, 241, 0.15);
+        color: #818cf8;
+      }
+
+      .badge-success {
+        background-color: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+      }
+
+      .badge-warning {
+        background-color: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+      }
+
+      .badge-danger {
+        background-color: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+
+      .card {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .card-header {
+        padding: 1.5rem 1.75rem 0;
+      }
+
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #f1f5f9;
+      }
+
+      .card-content {
+        padding: 1.5rem 1.75rem;
+      }
+
+      .card-footer {
+        padding: 0 1.75rem 1.5rem;
+      }
+
+      .avatar {
+        display: inline-flex;
+        border-radius: 9999px;
+        overflow: hidden;
+      }
+
+      .avatar-lg {
+        width: 5rem;
+        height: 5rem;
+      }
+
+      .avatar-md {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+
+      .avatar-sm {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+
+      .sidebar {
+        width: 17rem;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background-color: #0f172a;
+        border-right: 1px solid #1e293b;
+        padding: 1.75rem 1.25rem;
+        transition: transform 0.3s ease;
+        z-index: 40;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .main-content {
+        margin-left: 17rem;
+        padding: 2.25rem;
+        min-height: 100vh;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 0.85rem 1.15rem;
+        border-radius: 0.75rem;
+        color: #94a3b8;
+        transition: all 0.2s;
+        cursor: pointer;
+        margin-bottom: 0.35rem;
+      }
+
+      .nav-item:hover {
+        background-color: rgba(99, 102, 241, 0.1);
+        color: #818cf8;
+        transform: translateX(5px);
+      }
+
+      .nav-item.active {
+        background-color: rgba(99, 102, 241, 0.15);
+        color: #818cf8;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
+      }
+
+      .nav-item i {
+        margin-right: 0.85rem;
+        width: 1.25rem;
+        text-align: center;
+        font-size: 1.1rem;
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border: 1px solid #334155;
+        border-radius: 1rem;
+        padding: 1.75rem;
+        transition: all 0.3s ease;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
+      }
+
+      .stat-value {
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: #f1f5f9;
+        line-height: 1;
+      }
+
+      .stat-title {
+        color: #94a3b8;
+        font-size: 0.95rem;
+        margin-top: 0.75rem;
+      }
+
+      .app-status {
+        display: inline-block;
+        width: 0.65rem;
+        height: 0.65rem;
+        border-radius: 50%;
+        margin-right: 0.65rem;
+      }
+
+      .app-status.operational {
+        background-color: #10b981;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+      }
+
+      .app-status.degraded {
+        background-color: #f59e0b;
+        box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+        animation: pulse-slow 2s infinite;
+      }
+
+      .app-status.down {
+        background-color: #ef4444;
+        box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+      }
+
+      .user-menu {
+        position: relative;
+        display: inline-block;
+      }
+
+      .user-menu-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background-color: #1e293b;
+        min-width: 200px;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        border: 1px solid #334155;
+        z-index: 50;
+        margin-top: 0.75rem;
+        overflow: hidden;
+      }
+
+      .user-menu:hover .user-menu-content {
+        display: block;
+        animation: fadeIn 0.2s ease-in-out;
+      }
+
+      .user-menu-item {
+        padding: 0.85rem 1.25rem;
+        display: flex;
+        align-items: center;
+        color: #94a3b8;
+        transition: all 0.2s;
+        cursor: pointer;
+      }
+
+      .user-menu-item:hover {
+        background-color: rgba(99, 102, 241, 0.1);
+        color: #818cf8;
+      }
+
+      .user-menu-item i {
+        margin-right: 0.75rem;
+        width: 1.25rem;
+        text-align: center;
+      }
+
+      .notification-dot {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background-color: #ef4444;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+        border: 2px solid #0f172a;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          #1e293b 25%,
+          #2d3748 50%,
+          #1e293b 75%
+        );
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+        border-radius: 0.5rem;
+      }
+
+      @keyframes loading {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      /* Form elements */
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        display: block;
+        color: #94a3b8;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+      }
+
+      .form-input,
+      .form-select,
+      .form-textarea {
+        width: 100%;
+        background-color: #334155;
+        border: 1px solid #475569;
+        color: #f1f5f9;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        transition: all 0.2s;
+      }
+
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+      }
+
+      .form-input:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* Toggle switch */
+      .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 4rem;
+        height: 2rem;
+      }
+
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #475569;
+        transition: 0.4s;
+        border-radius: 2rem;
+      }
+
+      .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 1.5rem;
+        width: 1.5rem;
+        left: 0.25rem;
+        bottom: 0.25rem;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .toggle-slider {
+        background-color: #6366f1;
+      }
+
+      input:checked + .toggle-slider:before {
+        transform: translateX(2rem);
+      }
+
+      @media (max-width: 1024px) {
+        .sidebar {
+          transform: translateX(-100%);
+          width: 16rem;
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: 1.5rem;
+        }
+
+        .menu-toggle {
+          display: block;
+          position: fixed;
+          top: 1.5rem;
+          left: 1.5rem;
+          z-index: 50;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-octopus-dark min-h-screen text-gray-200">
+    <div
+      class="tentacle"
+      style="top: 10%; left: 10%; animation-delay: 0s"
+    ></div>
+    <div
+      class="tentacle"
+      style="top: 70%; left: 80%; animation-delay: -3s"
+    ></div>
+    <div
+      class="tentacle"
+      style="top: 30%; left: 70%; animation-delay: -6s"
+    ></div>
+    <div
+      class="tentacle"
+      style="top: 60%; left: 20%; animation-delay: -9s"
+    ></div>
+
+    <button class="menu-toggle btn btn-ghost lg:hidden fixed top-4 left-4 z-50">
+      <i class="fas fa-bars text-xl"></i>
+    </button>
+
+    <div class="sidebar">
+      <div class="flex items-center justify-center mb-10">
+        <div class="p-3 rounded-2xl octopus-bg shadow-2xl mr-3 glow">
+          <i class="fas fa-octopus text-white text-2xl"></i>
+        </div>
+        <h1 class="text-xl font-bold text-white">Octopus</h1>
+      </div>
+
+      <div class="space-y-1 mb-8">
+        <div class="nav-item">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
+        </div>
+        <div class="nav-item">
+          <i class="fas fa-chart-line"></i>
+          <span>Analytics</span>
+        </div>
+        <div class="nav-item">
+          <i class="fas fa-server"></i>
+          <span>Applications</span>
+        </div>
+        <div class="nav-item">
+          <i class="fas fa-bell"></i>
+          <span>Alerts</span>
+          <span
+            class="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+            >3</span
+          >
+        </div>
+        <div class="nav-item active">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </div>
+      </div>
+
+      <div class="mt-auto pt-8 border-t border-gray-800">
+        <div class="nav-item">
+          <i class="fas fa-question-circle"></i>
+          <span>Help & Support</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="flex justify-between items-center mb-10">
+        <div>
+          <h2 class="text-3xl font-bold text-white">Settings</h2>
+          <p class="text-gray-400 mt-2">Manage your account and preferences.</p>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <div class="user-menu">
+            <div
+              class="flex items-center bg-octopus-card-light rounded-xl p-3 cursor-pointer"
+            >
+              <div class="avatar avatar-md mr-3">
+                <img
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  alt="Profile"
+                />
+              </div>
+              <div>
+                <p class="text-sm font-medium text-white">Alex Johnson</p>
+              </div>
+              <i class="fas fa-chevron-down text-gray-400 ml-2"></i>
+            </div>
+
+            <div class="user-menu-content">
+              <div class="user-menu-item">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+              </div>
+              <div class="user-menu-item active">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+              </div>
+              <div class="user-menu-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Help</span>
+              </div>
+              <div
+                class="user-menu-item border-t border-gray-800 text-red-400 hover:text-red-300"
+              >
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Profile Settings</h3>
+              <p class="text-gray-400 text-sm mt-1">
+                Update your personal information and preferences.
+              </p>
+            </div>
+            <div class="card-content">
+              <form id="profile-form">
+                <div class="form-group">
+                  <label for="full-name" class="form-label">Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    class="form-input"
+                    value="Alex Johnson"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="full-name" class="form-label">Surname</label>
+                  <input
+                    type="text"
+                    id="surname"
+                    class="form-input"
+                    value="Alex Johnson"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="email" class="form-label">Email Address</label>
+                  <input
+                    type="email"
+                    id="email"
+                    class="form-input"
+                    value="alex@example.com"
+                    disabled
+                  />
+                </div>
+                
+                <div class="form-group">
+                  <label for="timezone" class="form-label">Timezone</label>
+                  <select id="timezone" class="form-select">
+                    <option value="est">Eastern Standard Time (EST)</option>
+                    <option value="cst">Central Standard Time (CST)</option>
+                    <option value="pst" selected>
+                      Pacific Standard Time (PST)
+                    </option>
+                  </select>
+                </div>
+                <div class="mt-8 flex justify-end">
+                  <button type="submit" class="btn btn-primary btn-md">
+                    <i class="fas fa-save mr-2"></i>
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-1 space-y-8">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Security</h3>
+              <p class="text-gray-400 text-sm mt-1">
+                Manage your account security.
+              </p>
+            </div>
+            <div class="card-content">
+                <div class="form-group">
+                <label for="password" class="form-label">Current Password</label>
+                <input
+                  type="password"
+                  id="current-password"
+                  class="form-input"
+                  placeholder="Enter current password"
+                />
+              </div>
+              <div class="form-group">
+                <label for="password" class="form-label">Change Password</label>
+                <input
+                  type="password"
+                  id="new-password"
+                  class="form-input"
+                  placeholder="Enter new password"
+                />
+              </div>
+              <div class="flex justify-end">
+                <button class="btn btn-secondary btn-md w-full">
+                  <i class="fas fa-key mr-2"></i>
+                  Update Password
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Notifications</h3>
+              <p class="text-gray-400 text-sm mt-1">
+                Configure your notification preferences.
+              </p>
+            </div>
+            <div class="card-content space-y-4">
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <label class="form-label">Email Notifications</label>
+                  <p class="text-gray-400 text-xs mt-1">
+                    Receive alerts and updates via email.
+                  </p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <label class="form-label">Discord Notifications</label>
+                  <p class="text-gray-400 text-xs mt-1">
+                    Receive critical alerts via Discord.
+                  </p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <label class="form-label">Slack Notifications</label>
+                  <p class="text-gray-400 text-xs mt-1">
+                    Receive critical alerts via Slack.
+                  </p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Handle navigation items
+        const navItems = document.querySelectorAll(".nav-item");
+        navItems.forEach((item) => {
+          item.addEventListener("click", function () {
+            navItems.forEach((i) => i.classList.remove("active"));
+            this.classList.add("active");
+
+            // Close sidebar on mobile after selection
+            if (window.innerWidth < 1024) {
+              document.querySelector(".sidebar").classList.remove("open");
+            }
+
+            // In a real application, you would navigate to the new page
+            const navText = this.querySelector("span").textContent.trim();
+            if (navText === "Dashboard") {
+              window.location.href = "dashboard.html";
+            }
+            // Add other navigation links here
+          });
+        });
+
+        // Mobile menu toggle
+        const menuToggle = document.querySelector(".menu-toggle");
+        const sidebar = document.querySelector(".sidebar");
+
+        if (menuToggle) {
+          menuToggle.addEventListener("click", function () {
+            sidebar.classList.toggle("open");
+          });
+        }
+
+        // Handle form submission
+        const profileForm = document.getElementById("profile-form");
+        if (profileForm) {
+          profileForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            alert("Profile settings saved!");
+            // In a real app, you would send this data to a backend API
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
