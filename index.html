@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Octopus - Application Monitoring</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            octopus: {
+              primary: '#6366f1',
+              secondary: '#818cf8',
+              accent: '#a5b4fc',
+              dark: '#0f172a',
+              card: '#1e293b',
+              'card-light': '#334155'
+            }
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': {transform: 'translateY(0)'},
+              '50%': {transform: 'translateY(-10px)'},
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .octopus-bg {
+      background: linear-gradient(135deg, #6366f1 0%, #0f172a 100%);
+    }
+
+    .tentacle {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      opacity: 0.07;
+      background: radial-gradient(circle, #818cf8 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 15s infinite alternate ease-in-out;
+    }
+
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .input-field {
+      transition: all 0.3s ease;
+    }
+
+    .input-field:focus {
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+    }
+
+    .tab-active {
+      position: relative;
+      z-index: 10;
+    }
+
+    .tab-active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #6366f1, #818cf8);
+      border-radius: 3px 3px 0 0;
+    }
+
+    .glow {
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    }
+  </style>
+</head>
+
+<body class="bg-octopus-dark min-h-screen flex items-center justify-center p-4 text-gray-200">
+  <!-- Animated background elements -->
+  <div class="tentacle" style="top: 10%; left: 10%; animation-delay: 0s;"></div>
+  <div class="tentacle" style="top: 70%; left: 80%; animation-delay: -3s;"></div>
+  <div class="tentacle" style="top: 30%; left: 70%; animation-delay: -6s;"></div>
+  <div class="tentacle" style="top: 60%; left: 20%; animation-delay: -9s;"></div>
+
+  <div class="container max-w-md mx-auto z-10">
+    <!-- Logo and app name -->
+    <div class="text-center mb-10">
+      <div class="inline-block p-5 rounded-2xl octopus-bg shadow-2xl card-hover glow">
+        <i class="fas fa-octopus text-white text-5xl animate-float"></i>
+      </div>
+      <h1
+        class="text-4xl font-bold text-white mt-6 bg-gradient-to-r from-octopus-primary to-octopus-secondary bg-clip-text text-transparent">
+        Octopus</h1>
+      <p class="text-octopus-accent mt-2 text-lg">Application Monitoring System</p>
+    </div>
+
+    <!-- Form container -->
+    <div class="bg-octopus-card rounded-2xl shadow-2xl overflow-hidden card-hover border border-octopus-card-light">
+      <!-- Login/Register toggle -->
+      <div class="flex border-b border-octopus-card-light">
+        <button id="login-tab" class="tab-active flex-1 py-5 px-6 text-center font-semibold text-white">Login</button>
+        <button id="register-tab"
+          class="flex-1 py-5 px-6 text-center font-semibold text-gray-400 hover:text-gray-300 transition-colors duration-300">Register</button>
+      </div>
+
+      <!-- Login form -->
+      <form id="login-form" class="p-8 space-y-6">
+        <div>
+          <label for="login-email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-envelope text-octopus-accent"></i>
+            </div>
+            <input type="email" id="login-email" required
+              class="input-field w-full pl-10 pr-4 py-3.5 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:border-octopus-primary placeholder-gray-500"
+              placeholder="Enter your email">
+          </div>
+        </div>
+        <div>
+          <label for="login-password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-lock text-octopus-accent"></i>
+            </div>
+            <input type="password" id="login-password" required
+              class="input-field w-full pl-10 pr-4 py-3.5 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:border-octopus-primary placeholder-gray-500"
+              placeholder="Enter your password">
+          </div>
+        </div>
+        <div class="flex items-center">
+          <input type="checkbox" id="remember-me"
+            class="h-4 w-4 text-octopus-primary focus:ring-octopus-primary border-gray-600 rounded bg-gray-800">
+          <label for="remember-me" class="ml-3 block text-sm text-gray-400">Remember me</label>
+        </div>
+        <button type="submit"
+          class="w-full bg-gradient-to-r from-octopus-primary to-octopus-secondary text-white py-3.5 px-4 rounded-xl hover:opacity-90 transition duration-300 flex items-center justify-center font-medium">
+          <span>Sign in to Dashboard</span>
+          <i class="fas fa-arrow-right ml-2"></i>
+        </button>
+      </form>
+
+      <!-- Register form -->
+      <form id="register-form" class="p-8 space-y-6 hidden">
+        <div>
+          <label for="register-name" class="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-user text-octopus-accent"></i>
+            </div>
+            <input type="text" id="register-name" required
+              class="input-field w-full pl-10 pr-4 py-3.5 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:border-octopus-primary placeholder-gray-500"
+              placeholder="Enter your full name">
+          </div>
+        </div>
+        <div>
+          <label for="register-email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-envelope text-octopus-accent"></i>
+            </div>
+            <input type="email" id="register-email" required
+              class="input-field w-full pl-10 pr-4 py-3.5 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:border-octopus-primary placeholder-gray-500"
+              placeholder="Enter your email">
+          </div>
+        </div>
+        <div>
+          <label for="register-password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-lock text-octopus-accent"></i>
+            </div>
+            <input type="password" id="register-password" required
+              class="input-field w-full pl-10 pr-4 py-3.5 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:border-octopus-primary placeholder-gray-500"
+              placeholder="Create a password">
+          </div>
+          <p class="text-xs text-gray-500 mt-2">Must be at least 8 characters</p>
+        </div>
+        <div>
+          <label for="register-confirm-password" class="block text-sm font-medium text-gray-300 mb-2">Confirm
+            Password</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-lock text-octopus-accent"></i>
+            </div>
+            <input type="password" id="register-confirm-password" required
+              class="input-field w-full pl-10 pr-4 py-3.5 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:border-octopus-primary placeholder-gray-500"
+              placeholder="Confirm your password">
+          </div>
+        </div>
+        <div class="flex items-center">
+          <input type="checkbox" id="terms" required
+            class="h-4 w-4 text-octopus-primary focus:ring-octopus-primary border-gray-600 rounded bg-gray-800">
+          <label for="terms" class="ml-3 block text-sm text-gray-400">I agree to the <a href="#"
+              class="text-octopus-primary hover:underline transition-colors duration-300">terms and
+              conditions</a></label>
+        </div>
+        <button type="submit"
+          class="w-full bg-gradient-to-r from-octopus-primary to-octopus-secondary text-white py-3.5 px-4 rounded-xl hover:opacity-90 transition duration-300 flex items-center justify-center font-medium">
+          <span>Create Account</span>
+          <i class="fas fa-user-plus ml-2"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Message/Notification area -->
+    <div id="message" class="mt-6 p-4 rounded-xl hidden bg-opacity-20 backdrop-blur-sm border"></div>
+
+    <!-- Footer -->
+    <div class="text-center text-gray-500 text-sm mt-8">
+      <p>&copy; 2025 Octopus Monitoring System. All rights reserved.</p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // DOM Elements
+      const loginTab = document.getElementById('login-tab');
+      const registerTab = document.getElementById('register-tab');
+      const loginForm = document.getElementById('login-form');
+      const registerForm = document.getElementById('register-form');
+      const messageDiv = document.getElementById('message');
+
+      // Switch to Login form
+      function showLoginForm() {
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+        loginTab.classList.add('tab-active', 'text-white');
+        loginTab.classList.remove('text-gray-400');
+        registerTab.classList.remove('tab-active', 'text-white');
+        registerTab.classList.add('text-gray-400');
+        hideMessage();
+      }
+
+      // Switch to Register form
+      function showRegisterForm() {
+        registerForm.classList.remove('hidden');
+        loginForm.classList.add('hidden');
+        registerTab.classList.add('tab-active', 'text-white');
+        registerTab.classList.remove('text-gray-400');
+        loginTab.classList.remove('tab-active', 'text-white');
+        loginTab.classList.add('text-gray-400');
+        hideMessage();
+      }
+
+      // Event listeners
+      loginTab.addEventListener('click', showLoginForm);
+      registerTab.addEventListener('click', showRegisterForm);
+
+      // Handle login form submission
+      loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        showMessage('Signing in to your dashboard...', 'info');
+
+        // API integration placeholder
+        setTimeout(() => {
+          console.log('Login attempt:', {email, password});
+          // showMessage('Login successful! Redirecting...', 'success');
+          // showMessage('Invalid credentials. Please try again.', 'error');
+        }, 1000);
+      });
+
+      // Handle register form submission
+      registerForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = document.getElementById('register-name').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const confirmPassword = document.getElementById('register-confirm-password').value;
+
+        if (password !== confirmPassword) {
+          showMessage('Passwords do not match', 'error');
+          return;
+        }
+
+        if (password.length < 8) {
+          showMessage('Password must be at least 8 characters', 'error');
+          return;
+        }
+
+        showMessage('Creating your account...', 'info');
+
+        // API integration placeholder
+        setTimeout(() => {
+          console.log('Registration attempt:', {name, email, password});
+          // showMessage('Account created successfully!', 'success');
+          // showMessage('Email already exists', 'error');
+        }, 1000);
+      });
+
+      // Show message/notification
+      function showMessage(text, type) {
+        messageDiv.textContent = text;
+        messageDiv.classList.remove('hidden', 'bg-red-900', 'text-red-200', 'bg-green-900', 'text-green-200', 'bg-blue-900', 'text-blue-200', 'border-red-700', 'border-green-700', 'border-blue-700');
+
+        switch (type) {
+          case 'error':
+            messageDiv.classList.add('bg-red-900', 'text-red-200', 'border-red-700');
+            break;
+          case 'success':
+            messageDiv.classList.add('bg-green-900', 'text-green-200', 'border-green-700');
+            break;
+          case 'info':
+            messageDiv.classList.add('bg-blue-900', 'text-blue-200', 'border-blue-700');
+            break;
+        }
+
+        messageDiv.classList.remove('hidden');
+
+        // Auto-hide info messages after 3 seconds
+        if (type === 'info') {
+          setTimeout(hideMessage, 3000);
+        }
+      }
+
+      // Hide message/notification
+      function hideMessage() {
+        messageDiv.classList.add('hidden');
+      }
+
+      // Initialize with login form
+      showLoginForm();
+    });
+  </script>
+</body>
+
+</html>
