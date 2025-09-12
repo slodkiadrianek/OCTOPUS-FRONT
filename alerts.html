@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Octopus - Alerts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              octopus: {
+                primary: "#6366f1",
+                secondary: "#818cf8",
+                accent: "#a5b4fc",
+                dark: "#0f172a",
+                card: "#1e293b",
+                "card-light": "#334155",
+              },
+            },
+            animation: {
+              float: "float 6s ease-in-out infinite",
+              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-10px)" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+      }
+
+      .octopus-bg {
+        background: linear-gradient(135deg, #6366f1 0%, #0f172a 100%);
+      }
+
+      .tentacle {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        opacity: 0.07;
+        background: radial-gradient(circle, #818cf8 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 15s infinite alternate ease-in-out;
+      }
+
+      .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      }
+
+      .glow {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+      }
+
+      /* Shadcn-like components */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.75rem;
+        font-weight: 500;
+        transition: all 0.2s;
+        outline: none;
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        background: linear-gradient(90deg, #6366f1, #818cf8);
+        color: white;
+        border: none;
+      }
+
+      .btn-primary:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background-color: #334155;
+        color: white;
+        border: 1px solid #475569;
+      }
+
+      .btn-secondary:hover {
+        background-color: #475569;
+        transform: translateY(-2px);
+      }
+
+      .btn-ghost {
+        background-color: transparent;
+        color: #94a3b8;
+        border: none;
+      }
+
+      .btn-ghost:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: #e2e8f0;
+        transform: translateY(-2px);
+      }
+
+      .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+      }
+
+      .btn-md {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.875rem;
+      }
+
+      .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 9999px;
+        padding: 0.35rem 0.85rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .badge-primary {
+        background-color: rgba(99, 102, 241, 0.15);
+        color: #818cf8;
+      }
+
+      .badge-success {
+        background-color: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+      }
+
+      .badge-warning {
+        background-color: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+      }
+
+      .badge-danger {
+        background-color: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+
+      .card {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .card-header {
+        padding: 1.5rem 1.75rem 0;
+      }
+
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #f1f5f9;
+      }
+
+      .card-content {
+        padding: 1.5rem 1.75rem;
+      }
+
+      .card-footer {
+        padding: 0 1.75rem 1.5rem;
+      }
+
+      .avatar {
+        display: inline-flex;
+        border-radius: 9999px;
+        overflow: hidden;
+      }
+
+      .avatar-lg {
+        width: 5rem;
+        height: 5rem;
+      }
+
+      .avatar-md {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+
+      .avatar-sm {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+
+      .sidebar {
+        width: 17rem;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background-color: #0f172a;
+        border-right: 1px solid #1e293b;
+        padding: 1.75rem 1.25rem;
+        transition: transform 0.3s ease;
+        z-index: 40;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .main-content {
+        margin-left: 17rem;
+        padding: 2.25rem;
+        min-height: 100vh;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 0.85rem 1.15rem;
+        border-radius: 0.75rem;
+        color: #94a3b8;
+        transition: all 0.2s;
+        cursor: pointer;
+        margin-bottom: 0.35rem;
+      }
+
+      .nav-item:hover {
+        background-color: rgba(99, 102, 241, 0.1);
+        color: #818cf8;
+        transform: translateX(5px);
+      }
+
+      .nav-item.active {
+        background-color: rgba(99, 102, 241, 0.15);
+        color: #818cf8;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
+      }
+
+      .nav-item i {
+        margin-right: 0.85rem;
+        width: 1.25rem;
+        text-align: center;
+        font-size: 1.1rem;
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border: 1px solid #334155;
+        border-radius: 1rem;
+        padding: 1.75rem;
+        transition: all 0.3s ease;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
+      }
+
+      .stat-value {
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: #f1f5f9;
+        line-height: 1;
+      }
+
+      .stat-title {
+        color: #94a3b8;
+        font-size: 0.95rem;
+        margin-top: 0.75rem;
+      }
+
+      .app-status {
+        display: inline-block;
+        width: 0.65rem;
+        height: 0.65rem;
+        border-radius: 50%;
+        margin-right: 0.65rem;
+      }
+
+      .app-status.operational {
+        background-color: #10b981;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+      }
+
+      .app-status.degraded {
+        background-color: #f59e0b;
+        box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+        animation: pulse-slow 2s infinite;
+      }
+
+      .app-status.down {
+        background-color: #ef4444;
+        box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+      }
+
+      .user-menu {
+        position: relative;
+        display: inline-block;
+      }
+
+      .user-menu-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background-color: #1e293b;
+        min-width: 200px;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        border: 1px solid #334155;
+        z-index: 50;
+        margin-top: 0.75rem;
+        overflow: hidden;
+      }
+
+      .user-menu:hover .user-menu-content {
+        display: block;
+        animation: fadeIn 0.2s ease-in-out;
+      }
+
+      .user-menu-item {
+        padding: 0.85rem 1.25rem;
+        display: flex;
+        align-items: center;
+        color: #94a3b8;
+        transition: all 0.2s;
+        cursor: pointer;
+      }
+
+      .user-menu-item:hover {
+        background-color: rgba(99, 102, 241, 0.1);
+        color: #818cf8;
+      }
+
+      .user-menu-item i {
+        margin-right: 0.75rem;
+        width: 1.25rem;
+        text-align: center;
+      }
+
+      .notification-dot {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background-color: #ef4444;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+        border: 2px solid #0f172a;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          #1e293b 25%,
+          #2d3748 50%,
+          #1e293b 75%
+        );
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+        border-radius: 0.5rem;
+      }
+
+      @keyframes loading {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      .alert-card {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .alert-card.critical {
+        border-left: 4px solid #ef4444;
+      }
+      
+      .alert-card.warning {
+        border-left: 4px solid #f59e0b;
+      }
+      
+      .alert-card.info {
+        border-left: 4px solid #6366f1;
+      }
+
+      .alert-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 0 15px rgba(99, 102, 241, 0.15);
+      }
+
+      .alert-icon {
+        font-size: 2rem;
+        margin-right: 1.5rem;
+      }
+
+      .alert-icon.critical {
+        color: #ef4444;
+      }
+
+      .alert-icon.warning {
+        color: #f59e0b;
+      }
+
+      .alert-icon.info {
+        color: #6366f1;
+      }
+
+      @media (max-width: 1024px) {
+        .sidebar {
+          transform: translateX(-100%);
+          width: 16rem;
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: 1.5rem;
+        }
+
+        .menu-toggle {
+          display: block;
+          position: fixed;
+          top: 1.5rem;
+          left: 1.5rem;
+          z-index: 50;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-octopus-dark min-h-screen text-gray-200">
+    <!-- Animated background elements -->
+    <div
+      class="tentacle"
+      style="top: 10%; left: 10%; animation-delay: 0s"
+    ></div>
+    <div
+      class="tentacle"
+      style="top: 70%; left: 80%; animation-delay: -3s"
+    ></div>
+    <div
+      class="tentacle"
+      style="top: 30%; left: 70%; animation-delay: -6s"
+    ></div>
+    <div
+      class="tentacle"
+      style="top: 60%; left: 20%; animation-delay: -9s"
+    ></div>
+
+    <!-- Mobile menu toggle -->
+    <button class="menu-toggle btn btn-ghost lg:hidden fixed top-4 left-4 z-50">
+      <i class="fas fa-bars text-xl"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="flex items-center justify-center mb-10">
+        <div class="p-3 rounded-2xl octopus-bg shadow-2xl mr-3 glow">
+          <i class="fas fa-octopus text-white text-2xl"></i>
+        </div>
+        <h1 class="text-xl font-bold text-white">Octopus</h1>
+      </div>
+
+      <div class="space-y-1 mb-8">
+        <div class="nav-item">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
+        </div>
+        <div class="nav-item">
+          <i class="fas fa-chart-line"></i>
+          <span>Analytics</span>
+        </div>
+        <div class="nav-item">
+          <i class="fas fa-server"></i>
+          <span>Applications</span>
+        </div>
+        <div class="nav-item active">
+          <i class="fas fa-bell"></i>
+          <span>Alerts</span>
+          <span
+            class="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+            >3</span
+          >
+        </div>
+        <div class="nav-item">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </div>
+      </div>
+
+      <div class="mt-auto pt-8 border-t border-gray-800">
+        <div class="nav-item">
+          <i class="fas fa-question-circle"></i>
+          <span>Help & Support</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-10">
+        <div>
+          <h2 class="text-3xl font-bold text-white">Alerts</h2>
+          <p class="text-gray-400 mt-2">
+            View and manage all system alerts.
+          </p>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <!-- User menu with logout -->
+          <div class="user-menu">
+            <div
+              class="flex items-center bg-octopus-card-light rounded-xl p-3 cursor-pointer"
+            >
+              <div class="avatar avatar-md mr-3">
+                <img
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  alt="Profile"
+                />
+              </div>
+              <div>
+                <p class="text-sm font-medium text-white">Alex Johnson</p>
+              </div>
+              <i class="fas fa-chevron-down text-gray-400 ml-2"></i>
+            </div>
+
+            <div class="user-menu-content">
+              <div class="user-menu-item">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+              </div>
+              <div class="user-menu-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+              </div>
+              <div class="user-menu-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Help</span>
+              </div>
+              <div
+                class="user-menu-item border-t border-gray-800 text-red-400 hover:text-red-300"
+              >
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Filter Controls -->
+      <div class="bg-octopus-card rounded-xl p-6 mb-8 flex flex-col md:flex-row items-center gap-4">
+        <div class="relative w-full md:w-1/2">
+          <i class="fas fa-search text-gray-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+          <input 
+            type="text" 
+            id="title-filter" 
+            placeholder="Search by title..." 
+            class="w-full pl-12 pr-4 py-3 bg-octopus-card-light text-white rounded-xl placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-octopus-primary transition-all"
+          />
+        </div>
+        <div class="relative w-full md:w-1/2">
+          <select 
+            id="type-filter" 
+            class="w-full appearance-none pl-4 pr-12 py-3 bg-octopus-card-light text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-octopus-primary transition-all cursor-pointer"
+          >
+            <option value="all">All Types</option>
+            <option value="critical">Critical</option>
+            <option value="warning">Warning</option>
+            <option value="info">Info</option>
+          </select>
+          <i class="fas fa-chevron-down text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+        </div>
+      </div>
+
+      <!-- Alerts Section -->
+      <div id="alerts-container" class="grid grid-cols-1 gap-6 min-h-[300px]">
+        <!-- Alerts will be injected here by JavaScript -->
+        <p id="loading-message" class="text-center text-gray-500 text-lg mt-12">Loading alerts...</p>
+      </div>
+
+      <!-- Pagination Controls -->
+      <div id="pagination-controls" class="flex justify-center items-center mt-8 space-x-2">
+        <!-- Pagination buttons will be injected here by JavaScript -->
+      </div>
+    </div>
+
+    <script>
+      let currentPage = 1;
+      let totalPages = 1;
+
+      // Mock API data to simulate backend filtering and pagination
+      const mockApiData = [
+        { type: "critical", title: "Database Connection Lost", description: "The primary application database has lost its connection. This is causing a complete outage.", time: "2 hours ago" },
+        { type: "warning", title: "High CPU Usage on Web Server", description: "CPU utilization for the main web server has been consistently above 90% for the last 30 minutes.", time: "5 hours ago" },
+        { type: "info", title: "New Software Update Available", description: "A new version of the Octopus client software is available. We recommend updating at your earliest convenience.", time: "1 day ago" },
+        { type: "critical", title: "API Gateway Offline", description: "The main API gateway is unresponsive, affecting all microservices.", time: "4 hours ago" },
+        { type: "warning", title: "Low Disk Space on Log Server", description: "The disk space on the central log server is running low, at 85% capacity.", time: "12 hours ago" },
+        { type: "info", title: "System Scheduled Maintenance", description: "Scheduled maintenance will be performed on the system this weekend.", time: "2 days ago" },
+        { type: "critical", title: "Payment Processor Unavailable", description: "The third-party payment processing service is currently unavailable.", time: "1 hour ago" },
+        { type: "warning", title: "High Memory Utilization", description: "Memory usage on the analytics server is exceeding safe thresholds.", time: "6 hours ago" },
+        { type: "info", title: "New Feature Deployed", description: "A new feature for user dashboards has been successfully deployed.", time: "3 hours ago" },
+      ];
+
+      const fetchAlerts = async (page, filters) => {
+        // Show loading message
+        document.getElementById("loading-message").style.display = 'block';
+        document.getElementById("alerts-container").innerHTML = '';
+        
+        // Simulate API call delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Simulate backend filtering
+        const filteredData = mockApiData.filter(alert => {
+          const matchesType = filters.type === "all" || alert.type === filters.type;
+          const matchesTitle = alert.title.toLowerCase().includes(filters.title.toLowerCase());
+          return matchesType && matchesTitle;
+        });
+
+        // Simulate pagination
+        const pageSize = 3;
+        const totalItems = filteredData.length;
+        const totalPages = Math.ceil(totalItems / pageSize);
+        const startIndex = (page - 1) * pageSize;
+        const paginatedData = filteredData.slice(startIndex, startIndex + pageSize);
+
+        // Hide loading message and render alerts
+        document.getElementById("loading-message").style.display = 'none';
+        renderAlerts(paginatedData);
+        updatePagination(page, totalPages);
+      };
+
+      const renderAlerts = (alerts) => {
+        const container = document.getElementById("alerts-container");
+        if (alerts.length === 0) {
+          container.innerHTML = `<p class="text-center text-gray-500 text-lg mt-12">No alerts found matching your criteria.</p>`;
+          return;
+        }
+
+        const alertCards = alerts.map(alert => {
+          let iconClass = '';
+          let textClass = '';
+          let badgeText = '';
+          let badgeClass = '';
+
+          switch (alert.type) {
+            case 'critical':
+              iconClass = 'fas fa-times-circle alert-icon critical';
+              textClass = 'text-red-400';
+              badgeText = 'Critical';
+              badgeClass = 'badge-danger';
+              break;
+            case 'warning':
+              iconClass = 'fas fa-exclamation-triangle alert-icon warning';
+              textClass = 'text-yellow-400';
+              badgeText = 'Warning';
+              badgeClass = 'badge-warning';
+              break;
+            case 'info':
+              iconClass = 'fas fa-info-circle alert-icon info';
+              textClass = 'text-indigo-400';
+              badgeText = 'Info';
+              badgeClass = 'badge-primary';
+              break;
+          }
+
+          return `
+            <div class="alert-card ${alert.type}">
+              <div class="flex items-start justify-between">
+                <div class="flex items-start">
+                  <i class="${iconClass}"></i>
+                  <div>
+                    <h3 class="text-lg font-semibold ${textClass} mb-1">
+                      ${alert.title}
+                    </h3>
+                    <p class="text-gray-400 text-sm">
+                      ${alert.description}
+                    </p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span class="badge ${badgeClass}">${badgeText}</span>
+                  <span class="block text-gray-500 text-xs mt-1">${alert.time}</span>
+                </div>
+              </div>
+              <div class="mt-4 flex justify-end space-x-2 border-t border-gray-700 pt-4">
+                <button class="btn btn-secondary btn-sm">
+                  <i class="fas fa-eye mr-2"></i>
+                  View Details
+                </button>
+                <button class="btn btn-ghost btn-sm">
+                  <i class="fas fa-check mr-2"></i>
+                  Resolve
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+        container.innerHTML = alertCards;
+      };
+
+      const updatePagination = (page, total) => {
+        currentPage = page;
+        totalPages = total;
+        const paginationContainer = document.getElementById("pagination-controls");
+        paginationContainer.innerHTML = '';
+
+        // Previous button
+        const prevBtn = document.createElement("button");
+        prevBtn.classList.add("btn", "btn-ghost", "btn-sm", "disabled:opacity-50", "disabled:cursor-not-allowed");
+        prevBtn.innerHTML = `<i class="fas fa-arrow-left"></i>`;
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.addEventListener("click", () => {
+          if (currentPage > 1) {
+            currentPage--;
+            filterAlerts();
+          }
+        });
+        paginationContainer.appendChild(prevBtn);
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+          const pageBtn = document.createElement("button");
+          pageBtn.classList.add("btn", "btn-sm", "mx-1");
+          if (i === currentPage) {
+            pageBtn.classList.add("btn-primary");
+          } else {
+            pageBtn.classList.add("btn-ghost");
+          }
+          pageBtn.textContent = i;
+          pageBtn.addEventListener("click", () => {
+            currentPage = i;
+            filterAlerts();
+          });
+          paginationContainer.appendChild(pageBtn);
+        }
+
+        // Next button
+        const nextBtn = document.createElement("button");
+        nextBtn.classList.add("btn", "btn-ghost", "btn-sm", "disabled:opacity-50", "disabled:cursor-not-allowed");
+        nextBtn.innerHTML = `<i class="fas fa-arrow-right"></i>`;
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.addEventListener("click", () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            filterAlerts();
+          }
+        });
+        paginationContainer.appendChild(nextBtn);
+      };
+
+      const filterAlerts = () => {
+        const titleFilter = document.getElementById("title-filter").value;
+        const typeFilter = document.getElementById("type-filter").value;
+        const filters = { title: titleFilter, type: typeFilter };
+        fetchAlerts(currentPage, filters);
+      };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const titleFilter = document.getElementById("title-filter");
+        const typeFilter = document.getElementById("type-filter");
+        
+        titleFilter.addEventListener("input", () => {
+          currentPage = 1; // Reset to first page on new search
+          filterAlerts();
+        });
+        typeFilter.addEventListener("change", () => {
+          currentPage = 1; // Reset to first page on new filter
+          filterAlerts();
+        });
+
+        // Initial load
+        filterAlerts();
+
+        // Handle navigation items
+        const navItems = document.querySelectorAll(".nav-item");
+        navItems.forEach((item) => {
+          item.addEventListener("click", function () {
+            navItems.forEach((i) => i.classList.remove("active"));
+            this.classList.add("active");
+
+            // Close sidebar on mobile after selection
+            if (window.innerWidth < 1024) {
+              document.querySelector(".sidebar").classList.remove("open");
+            }
+            
+            // In a real application, you would navigate to the new page
+            const navText = this.querySelector("span").textContent.trim();
+            if (navText === "Dashboard") {
+              window.location.href = "dashboard.html";
+            }
+            if (navText === "Settings") {
+              window.location.href = "settings.html";
+            }
+          });
+        });
+
+        // Mobile menu toggle
+        const menuToggle = document.querySelector(".menu-toggle");
+        const sidebar = document.querySelector(".sidebar");
+
+        if (menuToggle) {
+          menuToggle.addEventListener("click", function () {
+            sidebar.classList.toggle("open");
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

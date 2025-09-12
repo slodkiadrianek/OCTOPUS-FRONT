@@ -132,6 +132,16 @@
         padding: 0.75rem 1.5rem;
         font-size: 1rem;
       }
+      
+      .btn-danger {
+        background-color: #ef4444;
+        color: white;
+      }
+      
+      .btn-danger:hover {
+        background-color: #dc2626;
+        transform: translateY(-2px);
+      }
 
       .badge {
         display: inline-flex;
@@ -489,6 +499,55 @@
         transform: translateX(2rem);
       }
 
+      /* Message Modal */
+      .message-modal {
+        display: none;
+        position: fixed;
+        top: 1.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 100;
+        padding: 1rem 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      .message-modal.success {
+        background-color: #16a34a;
+        color: white;
+      }
+
+      .message-modal.error {
+        background-color: #ef4444;
+        color: white;
+      }
+      
+      .confirm-modal-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.7);
+          z-index: 90;
+          justify-content: center;
+          align-items: center;
+      }
+      
+      .confirm-modal-content {
+          background-color: #1e293b;
+          color: white;
+          padding: 2rem;
+          border-radius: 1rem;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+          width: 90%;
+          max-width: 400px;
+          text-align: center;
+          animation: fadeIn 0.3s ease-in-out;
+      }
+
       @media (max-width: 1024px) {
         .sidebar {
           transform: translateX(-100%);
@@ -583,7 +642,7 @@
       <div class="flex justify-between items-center mb-10">
         <div>
           <h2 class="text-3xl font-bold text-white">Settings</h2>
-          <p class="text-gray-400 mt-2">Manage your account and preferences.</p>
+          <p class="text-gray-400 mt-1">Manage your account and preferences.</p>
         </div>
 
         <div class="flex items-center space-x-4">
@@ -628,7 +687,7 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2">
+        <div class="lg:col-span-2 space-y-8">
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Profile Settings</h3>
@@ -638,23 +697,23 @@
             </div>
             <div class="card-content">
               <form id="profile-form">
-                <div class="form-group">
-                  <label for="full-name" class="form-label">Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    class="form-input"
-                    value="Alex Johnson"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="full-name" class="form-label">Surname</label>
-                  <input
-                    type="text"
-                    id="surname"
-                    class="form-input"
-                    value="Alex Johnson"
-                  />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="form-group">
+                    <label for="first-name" class="form-label">First Name</label>
+                    <input
+                      type="text"
+                      id="first-name"
+                      class="form-input"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="last-name" class="form-label">Last Name</label>
+                    <input
+                      type="text"
+                      id="last-name"
+                      class="form-input"
+                    />
+                  </div>
                 </div>
                 <div class="form-group">
                   <label for="email" class="form-label">Email Address</label>
@@ -662,23 +721,11 @@
                     type="email"
                     id="email"
                     class="form-input"
-                    value="alex@example.com"
                     disabled
                   />
                 </div>
-                
-                <div class="form-group">
-                  <label for="timezone" class="form-label">Timezone</label>
-                  <select id="timezone" class="form-select">
-                    <option value="est">Eastern Standard Time (EST)</option>
-                    <option value="cst">Central Standard Time (CST)</option>
-                    <option value="pst" selected>
-                      Pacific Standard Time (PST)
-                    </option>
-                  </select>
-                </div>
                 <div class="mt-8 flex justify-end">
-                  <button type="submit" class="btn btn-primary btn-md">
+                  <button type="submit" id="profile-save-btn" class="btn btn-primary btn-md">
                     <i class="fas fa-save mr-2"></i>
                     Save Changes
                   </button>
@@ -686,47 +733,10 @@
               </form>
             </div>
           </div>
-        </div>
-
-        <div class="lg:col-span-1 space-y-8">
+          
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Security</h3>
-              <p class="text-gray-400 text-sm mt-1">
-                Manage your account security.
-              </p>
-            </div>
-            <div class="card-content">
-                <div class="form-group">
-                <label for="password" class="form-label">Current Password</label>
-                <input
-                  type="password"
-                  id="current-password"
-                  class="form-input"
-                  placeholder="Enter current password"
-                />
-              </div>
-              <div class="form-group">
-                <label for="password" class="form-label">Change Password</label>
-                <input
-                  type="password"
-                  id="new-password"
-                  class="form-input"
-                  placeholder="Enter new password"
-                />
-              </div>
-              <div class="flex justify-end">
-                <button class="btn btn-secondary btn-md w-full">
-                  <i class="fas fa-key mr-2"></i>
-                  Update Password
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Notifications</h3>
+              <h3 class="card-title text-red-400">Notifications</h3>
               <p class="text-gray-400 text-sm mt-1">
                 Configure your notification preferences.
               </p>
@@ -740,7 +750,7 @@
                   </p>
                 </div>
                 <label class="toggle-switch">
-                  <input type="checkbox" checked />
+                  <input type="checkbox" id="email-notifications" />
                   <span class="toggle-slider"></span>
                 </label>
               </div>
@@ -752,7 +762,7 @@
                   </p>
                 </div>
                 <label class="toggle-switch">
-                  <input type="checkbox" />
+                  <input type="checkbox" id="discord-notifications" />
                   <span class="toggle-slider"></span>
                 </label>
               </div>
@@ -764,18 +774,245 @@
                   </p>
                 </div>
                 <label class="toggle-switch">
-                  <input type="checkbox" />
+                  <input type="checkbox" id="slack-notifications" />
                   <span class="toggle-slider"></span>
                 </label>
               </div>
+              <div class="flex justify-end pt-4 border-t border-gray-700">
+                  <button id="notification-save-btn" class="btn btn-primary btn-md">
+                      <i class="fas fa-bell mr-2"></i>
+                      Save Notifications
+                  </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-1 space-y-8">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Security</h3>
+              <p class="text-gray-400 text-sm mt-1">
+                Manage your account security.
+              </p>
+            </div>
+            <div class="card-content">
+              <form id="password-form">
+                <div class="form-group">
+                  <label for="current-password" class="form-label">Current Password</label>
+                  <input
+                    type="password"
+                    id="current-password"
+                    class="form-input"
+                    placeholder="Enter current password"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="new-password" class="form-label">New Password</label>
+                  <input
+                    type="password"
+                    id="new-password"
+                    class="form-input"
+                    placeholder="Enter new password"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="confirm-password" class="form-label">Confirm Password</label>
+                  <input
+                    type="password"
+                    id="confirm-password"
+                    class="form-input"
+                    placeholder="Confirm new password"
+                  />
+                </div>
+                <div class="flex justify-end mt-4">
+                  <button type="submit" id="password-save-btn" class="btn btn-secondary btn-md w-full">
+                    <i class="fas fa-key mr-2"></i>
+                    Update Password
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+          <div class="card border-red-500">
+            <div class="card-header">
+              <h3 class="card-title text-red-400">Danger Zone</h3>
+              <p class="text-red-400 text-sm mt-1">
+                Warning: These actions are irreversible.
+              </p>
+            </div>
+            <div class="card-content">
+              <button id="delete-account-btn" class="btn btn-danger btn-md w-full">
+                <i class="fas fa-trash-alt mr-2"></i>
+                Delete Account
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+    
+    <!-- Custom Message Modal -->
+    <div id="message-modal" class="message-modal">
+      <div id="message-text" class="flex items-center">
+          <i id="message-icon" class="mr-2"></i>
+          <span></span>
+      </div>
+    </div>
+    
+    <!-- Custom Confirmation Modal -->
+    <div id="confirm-modal-overlay" class="confirm-modal-overlay">
+        <div class="confirm-modal-content">
+            <h4 class="text-xl font-bold mb-4">Are you sure?</h4>
+            <p class="text-gray-400 mb-6">This action cannot be undone. All your data will be permanently deleted.</p>
+            <div class="flex justify-end space-x-4">
+                <button id="confirm-cancel-btn" class="btn btn-secondary btn-md">Cancel</button>
+                <button id="confirm-delete-btn" class="btn btn-danger btn-md">Delete</button>
+            </div>
+        </div>
+    </div>
 
     <script>
+      // State for the user's settings
+      const userSettings = {
+        profile: {
+          firstName: "Alex",
+          lastName: "Johnson",
+          email: "alex@example.com",
+        },
+        notifications: {
+          email: true,
+          discord: false,
+          slack: false,
+        },
+      };
+
+      /**
+       * Shows a custom message modal with a success or error message.
+       * @param {string} message - The message to display.
+       * @param {string} type - 'success' or 'error'.
+       */
+      const showMessage = (message, type) => {
+        const modal = document.getElementById("message-modal");
+        const messageText = document.querySelector("#message-text span");
+        const messageIcon = document.getElementById("message-icon");
+
+        // Set message and icon
+        messageText.textContent = message;
+        messageIcon.className = ''; // Clear existing classes
+        if (type === 'success') {
+          modal.className = "message-modal success";
+          messageIcon.classList.add('fas', 'fa-check-circle');
+        } else {
+          modal.className = "message-modal error";
+          messageIcon.classList.add('fas', 'fa-times-circle');
+        }
+
+        // Display the modal
+        modal.style.display = "block";
+        setTimeout(() => {
+          modal.style.display = "none";
+        }, 3000);
+      };
+
+      /**
+       * Toggles the loading state of a button.
+       * @param {HTMLButtonElement} button - The button element.
+       * @param {boolean} isLoading - True to show loading state, false otherwise.
+       */
+      const setLoading = (button, isLoading) => {
+        const icon = button.querySelector('i');
+        if (isLoading) {
+          button.disabled = true;
+          button.style.cursor = 'not-allowed';
+          button.originalIcon = icon.className;
+          icon.className = 'fas fa-spinner fa-spin mr-2';
+          button.originalText = button.textContent.trim();
+          button.childNodes[2].nodeValue = ' Saving...';
+        } else {
+          button.disabled = false;
+          button.style.cursor = 'pointer';
+          icon.className = button.originalIcon;
+          button.childNodes[2].nodeValue = ` ${button.originalText}`;
+        }
+      };
+
+      /**
+       * Simulates a successful API call to update the profile.
+       * @param {object} data - The data to save.
+       */
+      const mockUpdateProfile = (data) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            console.log("Mock API: Updating profile with data:", data);
+            userSettings.profile = { ...userSettings.profile, ...data };
+            resolve({ success: true, message: "Profile updated successfully!" });
+          }, 1500);
+        });
+      };
+
+      /**
+       * Simulates a successful or failed API call to update the password.
+       * @param {object} data - The data to save.
+       */
+      const mockUpdatePassword = (data) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            console.log("Mock API: Updating password with data:", data);
+            // Simulate a failure for demonstration
+            if (data.currentPassword !== "password123") {
+              reject({ success: false, message: "Incorrect current password." });
+            } else {
+              resolve({ success: true, message: "Password updated successfully!" });
+            }
+          }, 1500);
+        });
+      };
+
+      /**
+       * Simulates a successful API call to update notification settings.
+       * @param {object} data - The data to save.
+       */
+      const mockUpdateNotifications = (data) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            console.log("Mock API: Updating notifications with data:", data);
+            userSettings.notifications = { ...userSettings.notifications, ...data };
+            resolve({ success: true, message: "Notification settings saved!" });
+          }, 1500);
+        });
+      };
+      
+      /**
+       * Handles account deletion.
+       */
+      const mockDeleteAccount = () => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            console.log("Mock API: Account deleted.");
+            resolve({ success: true, message: "Account deleted successfully." });
+          }, 2000);
+        });
+      };
+
+      // Function to initialize the UI with mock data
+      const initializeUI = () => {
+        // Populate profile form
+        document.getElementById("first-name").value = userSettings.profile.firstName;
+        document.getElementById("last-name").value = userSettings.profile.lastName;
+        document.getElementById("email").value = userSettings.profile.email;
+
+        // Populate notification toggles
+        document.getElementById("email-notifications").checked = userSettings.notifications.email;
+        document.getElementById("discord-notifications").checked = userSettings.notifications.discord;
+        document.getElementById("slack-notifications").checked = userSettings.notifications.slack;
+      };
+
       document.addEventListener("DOMContentLoaded", function () {
+        // Initialize UI with mock data on load
+        initializeUI();
+
         // Handle navigation items
         const navItems = document.querySelectorAll(".nav-item");
         navItems.forEach((item) => {
@@ -793,7 +1030,9 @@
             if (navText === "Dashboard") {
               window.location.href = "dashboard.html";
             }
-            // Add other navigation links here
+            if (navText === "Alerts") {
+              window.location.href = "alerts.html";
+            }
           });
         });
 
@@ -807,15 +1046,98 @@
           });
         }
 
-        // Handle form submission
+        // Handle profile form submission
         const profileForm = document.getElementById("profile-form");
-        if (profileForm) {
-          profileForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-            alert("Profile settings saved!");
-            // In a real app, you would send this data to a backend API
-          });
-        }
+        const profileSaveBtn = document.getElementById("profile-save-btn");
+        profileForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          setLoading(profileSaveBtn, true);
+
+          const firstName = document.getElementById("first-name").value;
+          const lastName = document.getElementById("last-name").value;
+
+          try {
+            const result = await mockUpdateProfile({ firstName, lastName });
+            showMessage(result.message, 'success');
+          } catch (error) {
+            showMessage(error.message, 'error');
+          } finally {
+            setLoading(profileSaveBtn, false);
+          }
+        });
+
+        // Handle password form submission
+        const passwordForm = document.getElementById("password-form");
+        const passwordSaveBtn = document.getElementById("password-save-btn");
+        passwordForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const currentPassword = document.getElementById("current-password").value;
+          const newPassword = document.getElementById("new-password").value;
+          const confirmPassword = document.getElementById("confirm-password").value;
+
+          if (newPassword !== confirmPassword) {
+            showMessage("New passwords do not match.", 'error');
+            return;
+          }
+
+          setLoading(passwordSaveBtn, true);
+          try {
+            const result = await mockUpdatePassword({ currentPassword, newPassword });
+            showMessage(result.message, 'success');
+            // Clear password fields on success
+            document.getElementById("current-password").value = "";
+            document.getElementById("new-password").value = "";
+            document.getElementById("confirm-password").value = "";
+          } catch (error) {
+            showMessage(error.message, 'error');
+          } finally {
+            setLoading(passwordSaveBtn, false);
+          }
+        });
+
+        // Handle notification form submission
+        const notificationSaveBtn = document.getElementById("notification-save-btn");
+        notificationSaveBtn.addEventListener("click", async function () {
+          setLoading(notificationSaveBtn, true);
+          const email = document.getElementById("email-notifications").checked;
+          const discord = document.getElementById("discord-notifications").checked;
+          const slack = document.getElementById("slack-notifications").checked;
+
+          try {
+            const result = await mockUpdateNotifications({ email, discord, slack });
+            showMessage(result.message, 'success');
+          } catch (error) {
+            showMessage(error.message, 'error');
+          } finally {
+            setLoading(notificationSaveBtn, false);
+          }
+        });
+        
+        // Handle delete account button and modal
+        const deleteAccountBtn = document.getElementById("delete-account-btn");
+        const confirmModalOverlay = document.getElementById("confirm-modal-overlay");
+        const confirmCancelBtn = document.getElementById("confirm-cancel-btn");
+        const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
+        
+        deleteAccountBtn.addEventListener("click", () => {
+          confirmModalOverlay.style.display = "flex";
+        });
+        
+        confirmCancelBtn.addEventListener("click", () => {
+          confirmModalOverlay.style.display = "none";
+        });
+        
+        confirmDeleteBtn.addEventListener("click", async () => {
+          confirmModalOverlay.style.display = "none";
+          // Simulate account deletion
+          await mockDeleteAccount();
+          showMessage("Account deleted. You will be redirected shortly.", "success");
+          // In a real app, you would log out the user and redirect them
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 3000);
+        });
       });
     </script>
   </body>
