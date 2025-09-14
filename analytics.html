@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Octopus - Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        octopus: {
+                            primary: "#6366f1",
+                            secondary: "#818cf8",
+                            accent: "#a5b4fc",
+                            dark: "#0f172a",
+                            card: "#1e293b",
+                            "card-light": "#334155",
+                        },
+                    },
+                    animation: {
+                        float: "float 6s ease-in-out infinite",
+                        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+                    },
+                    keyframes: {
+                        float: {
+                            "0%, 100%": { transform: "translateY(0)" },
+                            "50%": { transform: "translateY(-10px)" },
+                        },
+                        fadeIn: {
+                            from: { opacity: 0, transform: "translateY(-10px)" },
+                            to: { opacity: 1, transform: "translateY(0)" },
+                        },
+                        "spin-slow": {
+                            from: { transform: "rotate(0deg)" },
+                            to: { transform: "rotate(360deg)" },
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        .octopus-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #0f172a 100%);
+        }
+
+        .tentacle {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            opacity: 0.07;
+            background: radial-gradient(circle, #818cf8 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 15s infinite alternate ease-in-out;
+        }
+
+        .sidebar {
+            width: 17rem;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background-color: #0f172a;
+            border-right: 1px solid #1e293b;
+            padding: 1.75rem 1.25rem;
+            transition: transform 0.3s ease;
+            z-index: 40;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            transform: translateX(-100%);
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .main-content {
+            margin-left: 0;
+            padding: 1.5rem;
+            min-height: 100vh;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1.15rem;
+            border-radius: 0.75rem;
+            color: #94a3b8;
+            transition: all 0.2s;
+            cursor: pointer;
+            margin-bottom: 0.35rem;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+            color: #818cf8;
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
+        }
+
+        .nav-item i {
+            margin-right: 0.85rem;
+            width: 1.25rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .card-glow {
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-glow::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: 12px;
+            background: linear-gradient(
+                45deg,
+                rgba(99, 102, 241, 0.5),
+                rgba(129, 140, 248, 0.5)
+            );
+            filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            z-index: -1;
+        }
+
+        .card-glow:hover::before {
+            opacity: 1;
+        }
+        
+        .analytics-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            border-color: #6366f1;
+        }
+
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-menu-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: #1e293b;
+            min-width: 200px;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border: 1px solid #334155;
+            z-index: 50;
+            margin-top: 0.75rem;
+            overflow: hidden;
+        }
+
+        .user-menu:hover .user-menu-content {
+            display: block;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        .user-menu-item {
+            padding: 0.85rem 1.25rem;
+            display: flex;
+            align-items: center;
+            color: #94a3b8;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .user-menu-item:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+            color: #818cf8;
+        }
+
+        .user-menu-item i {
+            margin-right: 0.75rem;
+            width: 1.25rem;
+            text-align: center;
+        }
+
+        /* Message Modal */
+        .message-modal {
+            display: none;
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .message-modal.success {
+            background-color: #16a34a;
+            color: white;
+        }
+
+        .message-modal.error {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #6366f1, #818cf8);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #334155;
+            color: white;
+            border: 1px solid #475569;
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+            transform: translateY(-2px);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .sidebar {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 17rem;
+                padding: 2.25rem;
+            }
+
+            .menu-toggle {
+                display: none !important;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Filter Panel */
+        .filter-panel {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-label {
+            color: #cbd5e1;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .metric-value {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        /* New styling for primary button */
+        .btn-primary-new {
+            background-color: #6366f1;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+        .btn-primary-new:hover {
+            background-color: #4f46e5;
+            transform: translateY(-2px);
+        }
+
+        /* Chart container styling */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Stats cards */
+        .stat-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #334155;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            line-height: 1;
+        }
+
+        .stat-title {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Custom range slider */
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: #334155;
+            outline: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #6366f1;
+            cursor: pointer;
+        }
+
+        .range-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #6366f1;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="bg-octopus-dark text-slate-200">
+    <div class="tentacle" style="top: 10%; left: 10%; animation-delay: 0s"></div>
+    <div class="tentacle" style="top: 70%; left: 80%; animation-delay: -3s"></div>
+    <div class="tentacle" style="top: 30%; left: 70%; animation-delay: -6s"></div>
+    <div class="tentacle" style="top: 60%; left: 20%; animation-delay: -9s"></div>
+
+    <!-- Mobile menu button for small screens -->
+    <button class="menu-toggle btn btn-secondary lg:hidden fixed top-4 left-4 z-50 p-3 rounded-lg">
+        <i class="fas fa-bars text-xl"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="flex items-center justify-center mb-10">
+            <div class="p-3 rounded-2xl octopus-bg shadow-2xl mr-3 glow">
+                <i class="fas fa-octopus text-white text-2xl"></i>
+            </div>
+            <h1 class="text-xl font-bold text-white">Octopus</h1>
+        </div>
+
+        <nav class="space-y-1 mb-8">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-home mr-3"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="analytics.html" class="nav-item active">
+                <i class="fas fa-chart-line mr-3"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="applications.html" class="nav-item">
+                <i class="fas fa-server mr-3"></i>
+                <span>Applications</span>
+            </a>
+            <a href="alerts.html" class="nav-item">
+                <i class="fas fa-bell mr-3"></i>
+                <span>Alerts</span>
+                <span
+                    class="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                    >3</span
+                >
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog mr-3"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+        
+        <div class="mt-auto pt-8 border-t border-gray-800">
+            <a href="help.html" class="nav-item">
+                <i class="fas fa-question-circle mr-3"></i>
+                <span>Help & Support</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main content area -->
+    <main class="main-content flex-1 overflow-y-auto transition-all">
+        <!-- Header -->
+        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <div>
+                <h2 class="text-3xl font-bold text-white">Server Analytics</h2>
+                <p class="text-slate-400 mt-1">
+                    Monitor server performance and resource utilization.
+                </p>
+            </div>
+            <div class="mt-4 sm:mt-0 flex items-center space-x-4">
+                <button id="export-btn" class="btn btn-primary-new">
+                    <i class="fas fa-download mr-2"></i>Export Data
+                </button>
+            </div>
+        </header>
+        
+        <!-- Filter Panel -->
+        <div class="filter-panel">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex flex-col sm:flex-row gap-4 flex-1">
+                    <div class="w-full sm:w-auto">
+                        <label class="metric-label block mb-2">Time Range</label>
+                        <select id="time-range" class="w-full bg-octopus-card text-slate-200 rounded-lg py-2 px-4 pr-8 border border-slate-700 focus:outline-none focus:border-octopus-primary transition-colors cursor-pointer">
+                            <option value="1h">Last Hour</option>
+                            <option value="6h">Last 6 Hours</option>
+                            <option value="12h">Last 12 Hours</option>
+                            <option value="24h" selected>Last 24 Hours</option>
+                            <option value="7d">Last 7 Days</option>
+                            <option value="30d">Last 30 Days</option>
+                        </select>
+                    </div>
+                    
+                    <div class="w-full sm:w-auto">
+                        <label class="metric-label block mb-2">Server</label>
+                        <select id="server-filter" class="w-full bg-octopus-card text-slate-200 rounded-lg py-2 px-4 pr-8 border border-slate-700 focus:outline-none focus:border-octopus-primary transition-colors cursor-pointer">
+                            <option value="all" selected>All Servers</option>
+                            <option value="web-1">Web Server 1</option>
+                            <option value="web-2">Web Server 2</option>
+                            <option value="db-1">Database Server</option>
+                            <option value="cache-1">Cache Server</option>
+                        </select>
+                    </div>
+                    
+                    <div class="w-full sm:w-auto">
+                        <label class="metric-label block mb-2">Metric</label>
+                        <select id="metric-filter" class="w-full bg-octopus-card text-slate-200 rounded-lg py-2 px-4 pr-8 border border-slate-700 focus:outline-none focus:border-octopus-primary transition-colors cursor-pointer">
+                            <option value="all" selected>All Metrics</option>
+                            <option value="cpu">CPU Usage</option>
+                            <option value="memory">Memory Usage</option>
+                            <option value="disk">Disk I/O</option>
+                            <option value="network">Network Traffic</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex items-end">
+                    <button id="apply-filters" class="btn btn-primary h-10">
+                        <i class="fas fa-filter mr-2"></i>Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="stat-value" id="avg-cpu">--</div>
+                        <div class="stat-title">Avg CPU Usage</div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-octopus-primary/10">
+                        <i class="fas fa-microchip text-octopus-primary text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="stat-value" id="avg-memory">--</div>
+                        <div class="stat-title">Avg Memory Usage</div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-green-500/10">
+                        <i class="fas fa-memory text-green-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="stat-value" id="avg-disk">--</div>
+                        <div class="stat-title">Avg Disk I/O</div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-yellow-500/10">
+                        <i class="fas fa-hdd text-yellow-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="stat-value" id="avg-network">--</div>
+                        <div class="stat-title">Avg Network</div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-purple-500/10">
+                        <i class="fas fa-network-wired text-purple-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- CPU Usage Chart -->
+            <div class="analytics-card">
+                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                    <i class="fas fa-microchip text-octopus-primary mr-2"></i>
+                    CPU Usage
+                </h3>
+                <div class="chart-container">
+                    <canvas id="cpu-chart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Memory Usage Chart -->
+            <div class="analytics-card">
+                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                    <i class="fas fa-memory text-green-500 mr-2"></i>
+                    Memory Usage
+                </h3>
+                <div class="chart-container">
+                    <canvas id="memory-chart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Disk I/O Chart -->
+            <div class="analytics-card">
+                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                    <i class="fas fa-hdd text-yellow-500 mr-2"></i>
+                    Disk I/O
+                </h3>
+                <div class="chart-container">
+                    <canvas id="disk-chart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Network Traffic Chart -->
+            <div class="analytics-card">
+                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                    <i class="fas fa-network-wired text-purple-500 mr-2"></i>
+                    Network Traffic
+                </h3>
+                <div class="chart-container">
+                    <canvas id="network-chart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Server Status Table -->
+        <div class="analytics-card">
+            <h3 class="text-lg font-semibold text-white mb-4">Server Status</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="pb-3 text-left text-slate-400">Server</th>
+                            <th class="pb-3 text-left text-slate-400">Status</th>
+                            <th class="pb-3 text-left text-slate-400">CPU</th>
+                            <th class="pb-3 text-left text-slate-400">Memory</th>
+                            <th class="pb-3 text-left text-slate-400">Disk</th>
+                            <th class="pb-3 text-left text-slate-400">Uptime</th>
+                        </tr>
+                    </thead>
+                    <tbody id="server-status-table">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Custom Message Modal -->
+    <div id="message-modal" class="message-modal">
+        <div id="message-text" class="flex items-center">
+            <i id="message-icon" class="mr-2"></i>
+            <span></span>
+        </div>
+    </div>
+
+    <!-- Scripting section -->
+    <script>
+        // Mock data for demonstration
+        const mockServerData = {
+            cpu: {
+                labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                data: Array.from({length: 24}, () => Math.floor(Math.random() * 100))
+            },
+            memory: {
+                labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                data: Array.from({length: 24}, () => Math.floor(Math.random() * 100))
+            },
+            disk: {
+                labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                data: Array.from({length: 24}, () => Math.floor(Math.random() * 200))
+            },
+            network: {
+                labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                data: Array.from({length: 24}, () => Math.floor(Math.random() * 500))
+            }
+        };
+
+        const mockServerStatus = [
+            {
+                name: "Web Server 1",
+                status: "running",
+                cpu: "45%",
+                memory: "62%",
+                disk: "78%",
+                uptime: "12d 4h 32m"
+            },
+            {
+                name: "Web Server 2",
+                status: "running",
+                cpu: "32%",
+                memory: "48%",
+                disk: "55%",
+                uptime: "8d 16h 12m"
+            },
+            {
+                name: "Database Server",
+                status: "running",
+                cpu: "68%",
+                memory: "82%",
+                disk: "64%",
+                uptime: "23d 7h 45m"
+            },
+            {
+                name: "Cache Server",
+                status: "degraded",
+                cpu: "15%",
+                memory: "25%",
+                disk: "32%",
+                uptime: "5d 19h 28m"
+            },
+            {
+                name: "File Server",
+                status: "stopped",
+                cpu: "0%",
+                memory: "0%",
+                disk: "0%",
+                uptime: "0h 0m"
+            }
+        ];
+
+        // Chart instances
+        let cpuChart, memoryChart, diskChart, networkChart;
+
+        /**
+         * Shows a custom message modal with a success or error message.
+         * @param {string} message - The message to display.
+         * @param {string} type - 'success' or 'error'.
+         */
+        const showMessage = (message, type) => {
+            const modal = document.getElementById("message-modal");
+            const messageText = document.querySelector("#message-text span");
+            const messageIcon = document.getElementById("message-icon");
+
+            // Set message and icon
+            messageText.textContent = message;
+            messageIcon.className = ''; // Clear existing classes
+            if (type === 'success') {
+                modal.className = "message-modal success";
+                messageIcon.classList.add('fas', 'fa-check-circle');
+            } else {
+                modal.className = "message-modal error";
+                messageIcon.classList.add('fas', 'fa-times-circle');
+            }
+
+            // Display the modal
+            modal.style.display = "block";
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 3000);
+        };
+
+        /**
+         * Initializes all charts with mock data
+         */
+        const initializeCharts = () => {
+            const cpuCtx = document.getElementById('cpu-chart').getContext('2d');
+            const memoryCtx = document.getElementById('memory-chart').getContext('2d');
+            const diskCtx = document.getElementById('disk-chart').getContext('2d');
+            const networkCtx = document.getElementById('network-chart').getContext('2d');
+            
+            // Chart options
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: '#1e293b',
+                        titleColor: '#e2e8f0',
+                        bodyColor: '#cbd5e1',
+                        borderColor: '#334155',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.parsed.y}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
+                        ticks: {
+                            color: '#94a3b8',
+                            maxRotation: 0,
+                            callback: function(value, index) {
+                                return index % 3 === 0 ? this.getLabelForValue(value) : '';
+                            }
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        },
+                        beginAtZero: true
+                    }
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        hoverRadius: 4
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            };
+            
+            // CPU Chart
+            cpuChart = new Chart(cpuCtx, {
+                type: 'line',
+                data: {
+                    labels: mockServerData.cpu.labels,
+                    datasets: [{
+                        label: 'CPU Usage',
+                        data: mockServerData.cpu.data,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: chartOptions
+            });
+            
+            // Memory Chart
+            memoryChart = new Chart(memoryCtx, {
+                type: 'line',
+                data: {
+                    labels: mockServerData.memory.labels,
+                    datasets: [{
+                        label: 'Memory Usage',
+                        data: mockServerData.memory.data,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: chartOptions
+            });
+            
+            // Disk Chart
+            diskChart = new Chart(diskCtx, {
+                type: 'line',
+                data: {
+                    labels: mockServerData.disk.labels,
+                    datasets: [{
+                        label: 'Disk I/O (MB/s)',
+                        data: mockServerData.disk.data,
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    scales: {
+                        ...chartOptions.scales,
+                        y: {
+                            ...chartOptions.scales.y,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + ' MB/s';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Network Chart
+            networkChart = new Chart(networkCtx, {
+                type: 'line',
+                data: {
+                    labels: mockServerData.network.labels,
+                    datasets: [{
+                        label: 'Network Traffic (KB/s)',
+                        data: mockServerData.network.data,
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    scales: {
+                        ...chartOptions.scales,
+                        y: {
+                            ...chartOptions.scales.y,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + ' KB/s';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        };
+
+        /**
+         * Renders server status table
+         */
+        const renderServerStatus = () => {
+            const table = document.getElementById('server-status-table');
+            
+            if (mockServerStatus.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="py-8 text-center text-slate-400">
+                            <i class="fas fa-server text-3xl mb-2"></i>
+                            <p>No server data available</p>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                table.innerHTML = mockServerStatus
+                    .map(server => `
+                        <tr class="border-b border-slate-800 hover:bg-slate-800/50">
+                            <td class="py-4">
+                                <div class="flex items-center">
+                                    <i class="fas fa-server mr-3 text-slate-400"></i>
+                                    <span class="font-medium">${server.name}</span>
+                                </div>
+                            </td>
+                            <td class="py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                    ${server.status === 'running' ? 'bg-green-500/20 text-green-400' : 
+                                      server.status === 'degraded' ? 'bg-yellow-500/20 text-yellow-400' : 
+                                      'bg-red-500/20 text-red-400'}">
+                                    <span class="h-2 w-2 rounded-full mr-1 
+                                        ${server.status === 'running' ? 'bg-green-400' : 
+                                          server.status === 'degraded' ? 'bg-yellow-400' : 
+                                          'bg-red-400'}"></span>
+                                    ${server.status.charAt(0).toUpperCase() + server.status.slice(1)}
+                                </span>
+                            </td>
+                            <td class="py-4">${server.cpu}</td>
+                            <td class="py-4">${server.memory}</td>
+                            <td class="py-4">${server.disk}</td>
+                            <td class="py-4">${server.uptime}</td>
+                        </tr>
+                    `)
+                    .join('');
+            }
+        };
+
+        /**
+         * Updates stats cards with average values
+         */
+        const updateStatsCards = () => {
+            // Calculate averages
+            const avgCpu = Math.round(mockServerData.cpu.data.reduce((a, b) => a + b, 0) / mockServerData.cpu.data.length);
+            const avgMemory = Math.round(mockServerData.memory.data.reduce((a, b) => a + b, 0) / mockServerData.memory.data.length);
+            const avgDisk = Math.round(mockServerData.disk.data.reduce((a, b) => a + b, 0) / mockServerData.disk.data.length);
+            const avgNetwork = Math.round(mockServerData.network.data.reduce((a, b) => a + b, 0) / mockServerData.network.data.length);
+            
+            // Update DOM
+            document.getElementById('avg-cpu').textContent = `${avgCpu}%`;
+            document.getElementById('avg-memory').textContent = `${avgMemory}%`;
+            document.getElementById('avg-disk').textContent = `${avgDisk} MB/s`;
+            document.getElementById('avg-network').textContent = `${avgNetwork} KB/s`;
+        };
+
+        /**
+         * Applies filters and updates charts
+         */
+        const applyFilters = () => {
+            const timeRange = document.getElementById('time-range').value;
+            const serverFilter = document.getElementById('server-filter').value;
+            const metricFilter = document.getElementById('metric-filter').value;
+            
+            // Show loading message
+            showMessage('Applying filters...', 'success');
+            
+            // In a real application, this would fetch new data from the API
+            // For now, we'll just simulate a delay and then update with the same data
+            setTimeout(() => {
+                // Update charts with filtered data (in a real app, this would be actual filtered data)
+                updateStatsCards();
+                showMessage('Filters applied successfully', 'success');
+            }, 1000);
+        };
+
+        /**
+         * Exports data based on current filters
+         */
+        const exportData = () => {
+            const timeRange = document.getElementById('time-range').value;
+            const serverFilter = document.getElementById('server-filter').value;
+            const metricFilter = document.getElementById('metric-filter').value;
+            
+            showMessage(`Exporting data for ${timeRange}...`, 'success');
+            
+            // In a real application, this would trigger a download
+            // For demonstration, we'll just show a success message after a delay
+            setTimeout(() => {
+                showMessage('Data exported successfully', 'success');
+            }, 1500);
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Handle navigation items
+            const navItems = document.querySelectorAll(".nav-item");
+            navItems.forEach((item) => {
+                item.addEventListener("click", function () {
+                    navItems.forEach((i) => i.classList.remove("active"));
+                    this.classList.add("active");
+
+                    // Close sidebar on mobile after selection
+                    if (window.innerWidth < 1024) {
+                        document.querySelector(".sidebar").classList.remove("open");
+                    }
+                });
+            });
+
+            // Mobile menu toggle
+            const menuToggle = document.querySelector(".menu-toggle");
+            const sidebar = document.querySelector(".sidebar");
+
+            if (menuToggle) {
+                menuToggle.addEventListener("click", function () {
+                    sidebar.classList.toggle("open");
+                });
+            }
+            
+            // Initialize charts and data
+            initializeCharts();
+            renderServerStatus();
+            updateStatsCards();
+            
+            // Add event listeners
+            document.getElementById('apply-filters').addEventListener('click', applyFilters);
+            document.getElementById('export-btn').addEventListener('click', exportData);
+            
+            // Add change listeners to filters
+            document.getElementById('time-range').addEventListener('change', applyFilters);
+            document.getElementById('server-filter').addEventListener('change', applyFilters);
+            document.getElementById('metric-filter').addEventListener('change', applyFilters);
+        });
+    </script>
+</body>
+</html>

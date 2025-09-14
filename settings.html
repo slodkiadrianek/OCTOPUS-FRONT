@@ -132,12 +132,12 @@
         padding: 0.75rem 1.5rem;
         font-size: 1rem;
       }
-      
+
       .btn-danger {
         background-color: #ef4444;
         color: white;
       }
-      
+
       .btn-danger:hover {
         background-color: #dc2626;
         transform: translateY(-2px);
@@ -522,30 +522,30 @@
         background-color: #ef4444;
         color: white;
       }
-      
+
       .confirm-modal-overlay {
-          display: none;
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.7);
-          z-index: 90;
-          justify-content: center;
-          align-items: center;
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 90;
+        justify-content: center;
+        align-items: center;
       }
-      
+
       .confirm-modal-content {
-          background-color: #1e293b;
-          color: white;
-          padding: 2rem;
-          border-radius: 1rem;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-          width: 90%;
-          max-width: 400px;
-          text-align: center;
-          animation: fadeIn 0.3s ease-in-out;
+        background-color: #1e293b;
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        animation: fadeIn 0.3s ease-in-out;
       }
 
       @media (max-width: 1024px) {
@@ -646,43 +646,7 @@
         </div>
 
         <div class="flex items-center space-x-4">
-          <div class="user-menu">
-            <div
-              class="flex items-center bg-octopus-card-light rounded-xl p-3 cursor-pointer"
-            >
-              <div class="avatar avatar-md mr-3">
-                <img
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt="Profile"
-                />
-              </div>
-              <div>
-                <p class="text-sm font-medium text-white">Alex Johnson</p>
-              </div>
-              <i class="fas fa-chevron-down text-gray-400 ml-2"></i>
-            </div>
-
-            <div class="user-menu-content">
-              <div class="user-menu-item">
-                <i class="fas fa-user"></i>
-                <span>Profile</span>
-              </div>
-              <div class="user-menu-item active">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
-              </div>
-              <div class="user-menu-item">
-                <i class="fas fa-question-circle"></i>
-                <span>Help</span>
-              </div>
-              <div
-                class="user-menu-item border-t border-gray-800 text-red-400 hover:text-red-300"
-              >
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-              </div>
-            </div>
-          </div>
+         
         </div>
       </div>
 
@@ -699,33 +663,26 @@
               <form id="profile-form">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div class="form-group">
-                    <label for="first-name" class="form-label">First Name</label>
-                    <input
-                      type="text"
-                      id="first-name"
-                      class="form-input"
-                    />
+                    <label for="first-name" class="form-label"
+                      >First Name</label
+                    >
+                    <input type="text" id="first-name" class="form-input" />
                   </div>
                   <div class="form-group">
                     <label for="last-name" class="form-label">Last Name</label>
-                    <input
-                      type="text"
-                      id="last-name"
-                      class="form-input"
-                    />
+                    <input type="text" id="last-name" class="form-input" />
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="email" class="form-label">Email Address</label>
-                  <input
-                    type="email"
-                    id="email"
-                    class="form-input"
-                    disabled
-                  />
+                  <input type="email" id="email" class="form-input" disabled />
                 </div>
                 <div class="mt-8 flex justify-end">
-                  <button type="submit" id="profile-save-btn" class="btn btn-primary btn-md">
+                  <button
+                    type="submit"
+                    id="profile-save-btn"
+                    class="btn btn-primary btn-md"
+                  >
                     <i class="fas fa-save mr-2"></i>
                     Save Changes
                   </button>
@@ -733,7 +690,7 @@
               </form>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="card-header">
               <h3 class="card-title text-red-400">Notifications</h3>
@@ -779,10 +736,13 @@
                 </label>
               </div>
               <div class="flex justify-end pt-4 border-t border-gray-700">
-                  <button id="notification-save-btn" class="btn btn-primary btn-md">
-                      <i class="fas fa-bell mr-2"></i>
-                      Save Notifications
-                  </button>
+                <button
+                  id="notification-save-btn"
+                  class="btn btn-primary btn-md"
+                >
+                  <i class="fas fa-bell mr-2"></i>
+                  Save Notifications
+                </button>
               </div>
             </div>
           </div>
@@ -799,7 +759,9 @@
             <div class="card-content">
               <form id="password-form">
                 <div class="form-group">
-                  <label for="current-password" class="form-label">Current Password</label>
+                  <label for="current-password" class="form-label"
+                    >Current Password</label
+                  >
                   <input
                     type="password"
                     id="current-password"
@@ -808,7 +770,9 @@
                   />
                 </div>
                 <div class="form-group">
-                  <label for="new-password" class="form-label">New Password</label>
+                  <label for="new-password" class="form-label"
+                    >New Password</label
+                  >
                   <input
                     type="password"
                     id="new-password"
@@ -817,7 +781,9 @@
                   />
                 </div>
                 <div class="form-group">
-                  <label for="confirm-password" class="form-label">Confirm Password</label>
+                  <label for="confirm-password" class="form-label"
+                    >Confirm Password</label
+                  >
                   <input
                     type="password"
                     id="confirm-password"
@@ -826,7 +792,11 @@
                   />
                 </div>
                 <div class="flex justify-end mt-4">
-                  <button type="submit" id="password-save-btn" class="btn btn-secondary btn-md w-full">
+                  <button
+                    type="submit"
+                    id="password-save-btn"
+                    class="btn btn-secondary btn-md w-full"
+                  >
                     <i class="fas fa-key mr-2"></i>
                     Update Password
                   </button>
@@ -834,7 +804,7 @@
               </form>
             </div>
           </div>
-          
+
           <div class="card border-red-500">
             <div class="card-header">
               <h3 class="card-title text-red-400">Danger Zone</h3>
@@ -843,7 +813,10 @@
               </p>
             </div>
             <div class="card-content">
-              <button id="delete-account-btn" class="btn btn-danger btn-md w-full">
+              <button
+                id="delete-account-btn"
+                class="btn btn-danger btn-md w-full"
+              >
                 <i class="fas fa-trash-alt mr-2"></i>
                 Delete Account
               </button>
@@ -852,25 +825,32 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Custom Message Modal -->
     <div id="message-modal" class="message-modal">
       <div id="message-text" class="flex items-center">
-          <i id="message-icon" class="mr-2"></i>
-          <span></span>
+        <i id="message-icon" class="mr-2"></i>
+        <span></span>
       </div>
     </div>
-    
+
     <!-- Custom Confirmation Modal -->
     <div id="confirm-modal-overlay" class="confirm-modal-overlay">
-        <div class="confirm-modal-content">
-            <h4 class="text-xl font-bold mb-4">Are you sure?</h4>
-            <p class="text-gray-400 mb-6">This action cannot be undone. All your data will be permanently deleted.</p>
-            <div class="flex justify-end space-x-4">
-                <button id="confirm-cancel-btn" class="btn btn-secondary btn-md">Cancel</button>
-                <button id="confirm-delete-btn" class="btn btn-danger btn-md">Delete</button>
-            </div>
+      <div class="confirm-modal-content">
+        <h4 class="text-xl font-bold mb-4">Are you sure?</h4>
+        <p class="text-gray-400 mb-6">
+          This action cannot be undone. All your data will be permanently
+          deleted.
+        </p>
+        <div class="flex justify-end space-x-4">
+          <button id="confirm-cancel-btn" class="btn btn-secondary btn-md">
+            Cancel
+          </button>
+          <button id="confirm-delete-btn" class="btn btn-danger btn-md">
+            Delete
+          </button>
         </div>
+      </div>
     </div>
 
     <script>
@@ -900,13 +880,13 @@
 
         // Set message and icon
         messageText.textContent = message;
-        messageIcon.className = ''; // Clear existing classes
-        if (type === 'success') {
+        messageIcon.className = ""; // Clear existing classes
+        if (type === "success") {
           modal.className = "message-modal success";
-          messageIcon.classList.add('fas', 'fa-check-circle');
+          messageIcon.classList.add("fas", "fa-check-circle");
         } else {
           modal.className = "message-modal error";
-          messageIcon.classList.add('fas', 'fa-times-circle');
+          messageIcon.classList.add("fas", "fa-times-circle");
         }
 
         // Display the modal
@@ -922,17 +902,17 @@
        * @param {boolean} isLoading - True to show loading state, false otherwise.
        */
       const setLoading = (button, isLoading) => {
-        const icon = button.querySelector('i');
+        const icon = button.querySelector("i");
         if (isLoading) {
           button.disabled = true;
-          button.style.cursor = 'not-allowed';
+          button.style.cursor = "not-allowed";
           button.originalIcon = icon.className;
-          icon.className = 'fas fa-spinner fa-spin mr-2';
+          icon.className = "fas fa-spinner fa-spin mr-2";
           button.originalText = button.textContent.trim();
-          button.childNodes[2].nodeValue = ' Saving...';
+          button.childNodes[2].nodeValue = " Saving...";
         } else {
           button.disabled = false;
-          button.style.cursor = 'pointer';
+          button.style.cursor = "pointer";
           icon.className = button.originalIcon;
           button.childNodes[2].nodeValue = ` ${button.originalText}`;
         }
@@ -947,7 +927,10 @@
           setTimeout(() => {
             console.log("Mock API: Updating profile with data:", data);
             userSettings.profile = { ...userSettings.profile, ...data };
-            resolve({ success: true, message: "Profile updated successfully!" });
+            resolve({
+              success: true,
+              message: "Profile updated successfully!",
+            });
           }, 1500);
         });
       };
@@ -962,9 +945,15 @@
             console.log("Mock API: Updating password with data:", data);
             // Simulate a failure for demonstration
             if (data.currentPassword !== "password123") {
-              reject({ success: false, message: "Incorrect current password." });
+              reject({
+                success: false,
+                message: "Incorrect current password.",
+              });
             } else {
-              resolve({ success: true, message: "Password updated successfully!" });
+              resolve({
+                success: true,
+                message: "Password updated successfully!",
+              });
             }
           }, 1500);
         });
@@ -978,12 +967,15 @@
         return new Promise((resolve, reject) => {
           setTimeout(() => {
             console.log("Mock API: Updating notifications with data:", data);
-            userSettings.notifications = { ...userSettings.notifications, ...data };
+            userSettings.notifications = {
+              ...userSettings.notifications,
+              ...data,
+            };
             resolve({ success: true, message: "Notification settings saved!" });
           }, 1500);
         });
       };
-      
+
       /**
        * Handles account deletion.
        */
@@ -991,7 +983,10 @@
         return new Promise((resolve) => {
           setTimeout(() => {
             console.log("Mock API: Account deleted.");
-            resolve({ success: true, message: "Account deleted successfully." });
+            resolve({
+              success: true,
+              message: "Account deleted successfully.",
+            });
           }, 2000);
         });
       };
@@ -999,14 +994,19 @@
       // Function to initialize the UI with mock data
       const initializeUI = () => {
         // Populate profile form
-        document.getElementById("first-name").value = userSettings.profile.firstName;
-        document.getElementById("last-name").value = userSettings.profile.lastName;
+        document.getElementById("first-name").value =
+          userSettings.profile.firstName;
+        document.getElementById("last-name").value =
+          userSettings.profile.lastName;
         document.getElementById("email").value = userSettings.profile.email;
 
         // Populate notification toggles
-        document.getElementById("email-notifications").checked = userSettings.notifications.email;
-        document.getElementById("discord-notifications").checked = userSettings.notifications.discord;
-        document.getElementById("slack-notifications").checked = userSettings.notifications.slack;
+        document.getElementById("email-notifications").checked =
+          userSettings.notifications.email;
+        document.getElementById("discord-notifications").checked =
+          userSettings.notifications.discord;
+        document.getElementById("slack-notifications").checked =
+          userSettings.notifications.slack;
       };
 
       document.addEventListener("DOMContentLoaded", function () {
@@ -1058,9 +1058,9 @@
 
           try {
             const result = await mockUpdateProfile({ firstName, lastName });
-            showMessage(result.message, 'success');
+            showMessage(result.message, "success");
           } catch (error) {
-            showMessage(error.message, 'error');
+            showMessage(error.message, "error");
           } finally {
             setLoading(profileSaveBtn, false);
           }
@@ -1072,67 +1072,85 @@
         passwordForm.addEventListener("submit", async function (e) {
           e.preventDefault();
 
-          const currentPassword = document.getElementById("current-password").value;
+          const currentPassword =
+            document.getElementById("current-password").value;
           const newPassword = document.getElementById("new-password").value;
-          const confirmPassword = document.getElementById("confirm-password").value;
+          const confirmPassword =
+            document.getElementById("confirm-password").value;
 
           if (newPassword !== confirmPassword) {
-            showMessage("New passwords do not match.", 'error');
+            showMessage("New passwords do not match.", "error");
             return;
           }
 
           setLoading(passwordSaveBtn, true);
           try {
-            const result = await mockUpdatePassword({ currentPassword, newPassword });
-            showMessage(result.message, 'success');
+            const result = await mockUpdatePassword({
+              currentPassword,
+              newPassword,
+            });
+            showMessage(result.message, "success");
             // Clear password fields on success
             document.getElementById("current-password").value = "";
             document.getElementById("new-password").value = "";
             document.getElementById("confirm-password").value = "";
           } catch (error) {
-            showMessage(error.message, 'error');
+            showMessage(error.message, "error");
           } finally {
             setLoading(passwordSaveBtn, false);
           }
         });
 
         // Handle notification form submission
-        const notificationSaveBtn = document.getElementById("notification-save-btn");
+        const notificationSaveBtn = document.getElementById(
+          "notification-save-btn"
+        );
         notificationSaveBtn.addEventListener("click", async function () {
           setLoading(notificationSaveBtn, true);
           const email = document.getElementById("email-notifications").checked;
-          const discord = document.getElementById("discord-notifications").checked;
+          const discord = document.getElementById(
+            "discord-notifications"
+          ).checked;
           const slack = document.getElementById("slack-notifications").checked;
 
           try {
-            const result = await mockUpdateNotifications({ email, discord, slack });
-            showMessage(result.message, 'success');
+            const result = await mockUpdateNotifications({
+              email,
+              discord,
+              slack,
+            });
+            showMessage(result.message, "success");
           } catch (error) {
-            showMessage(error.message, 'error');
+            showMessage(error.message, "error");
           } finally {
             setLoading(notificationSaveBtn, false);
           }
         });
-        
+
         // Handle delete account button and modal
         const deleteAccountBtn = document.getElementById("delete-account-btn");
-        const confirmModalOverlay = document.getElementById("confirm-modal-overlay");
+        const confirmModalOverlay = document.getElementById(
+          "confirm-modal-overlay"
+        );
         const confirmCancelBtn = document.getElementById("confirm-cancel-btn");
         const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
-        
+
         deleteAccountBtn.addEventListener("click", () => {
           confirmModalOverlay.style.display = "flex";
         });
-        
+
         confirmCancelBtn.addEventListener("click", () => {
           confirmModalOverlay.style.display = "none";
         });
-        
+
         confirmDeleteBtn.addEventListener("click", async () => {
           confirmModalOverlay.style.display = "none";
           // Simulate account deletion
           await mockDeleteAccount();
-          showMessage("Account deleted. You will be redirected shortly.", "success");
+          showMessage(
+            "Account deleted. You will be redirected shortly.",
+            "success"
+          );
           // In a real app, you would log out the user and redirect them
           setTimeout(() => {
             window.location.href = "/";
